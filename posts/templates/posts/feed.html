@@ -1,0 +1,132 @@
+{% extends 'base.html' %} {% block content %}
+<div class="header">Home</div>
+
+<!-- Create Post Placeholder -->
+<div
+  style="
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+    display: flex;
+    gap: 10px;
+  "
+>
+  <div
+    style="
+      width: 40px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 50%;
+    "
+  ></div>
+  <div style="flex-grow: 1">
+    <textarea
+      placeholder="What's happening?"
+      style="
+        width: 100%;
+        border: none;
+        font-size: 20px;
+        outline: none;
+        resize: none;
+        font-family: inherit;
+        margin-top: 10px;
+      "
+    ></textarea>
+    <div style="text-align: right; margin-top: 10px">
+      <button class="btn">Tweet</button>
+    </div>
+  </div>
+</div>
+
+<!-- Feed -->
+{% for post in posts %}
+<div
+  style="
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+    display: flex;
+    gap: 10px;
+    cursor: pointer;
+  "
+>
+  <!-- Avatar -->
+  <!-- Assuming post.author.avatar corresponds to a FileField, use .url. Fallback for now if empty or error -->
+  <div
+    style="
+      width: 40px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 50%;
+      overflow: hidden;
+    "
+  >
+    {% if post.author.avatar %}
+    <img
+      src="{{ post.author.avatar.url }}"
+      alt="{{ post.author.bio }}"
+      style="width: 100%; height: 100%; object-fit: cover"
+    />
+    {% endif %}
+  </div>
+
+  <!-- Content -->
+  <div style="flex-grow: 1">
+    <!-- Header -->
+    <div style="margin-bottom: 5px">
+      <span style="font-weight: bold">{{ post.author.bio }}</span>
+      <!-- Using bio as name for now -->
+      <span style="color: #536471"
+        >@{{ post.author.id }} · {{ post.created_at|date:"M d" }}</span
+      >
+    </div>
+
+    <!-- Text -->
+    <div style="margin-bottom: 10px; font-size: 15px; line-height: 20px">
+      {{ post.content }}
+    </div>
+
+    <!-- Image -->
+    {% if post.image %}
+    <div
+      style="
+        margin-bottom: 10px;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #eff3f4;
+      "
+    >
+      <img src="{{ post.image.url }}" style="width: 100%; display: block" />
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        max-width: 400px;
+        color: #536471;
+      "
+    >
+      <div style="display: flex; align-items: center; gap: 5px">
+        <span>💬</span>
+        <span>{{ post.comment_set.count }}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 5px">
+        <span>🔁</span>
+        <span>0</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 5px">
+        <span>❤️</span>
+        <span>{{ post.reaction_set.count }}</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 5px">
+        <span>📊</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% empty %}
+<div style="padding: 20px; text-align: center; color: #536471">
+  No posts yet. Follow someone or create a post!
+</div>
+{% endfor %} {% endblock %}

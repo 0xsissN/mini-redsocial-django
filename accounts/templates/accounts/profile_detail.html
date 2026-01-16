@@ -1,0 +1,166 @@
+{% extends 'base.html' %} {% block content %}
+<div class="header">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <a
+      href="javascript:history.back()"
+      style="text-decoration: none; color: black"
+      >←</a
+    >
+    <div>
+      <div style="font-weight: bold">{{ profile.bio|truncatechars:20 }}</div>
+      <div style="font-size: 13px; color: #536471">{{ posts_count }} posts</div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Context -->
+<div style="padding: 20px; border-bottom: 1px solid #eff3f4">
+  <!-- Top Row: Avatar + Stats -->
+  <div
+    style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    "
+  >
+    <!-- Avatar -->
+    <div
+      style="
+        width: 100px;
+        height: 100px;
+        background-color: #ccc;
+        border-radius: 50%;
+        overflow: hidden;
+      "
+    >
+      {% if profile.avatar %}
+      <img
+        src="{{ profile.avatar.url }}"
+        style="width: 100%; height: 100%; object-fit: cover"
+      />
+      {% endif %}
+    </div>
+
+    <!-- Actions (Edit/Follow) -->
+    <div>
+      {% if user.is_authenticated %}
+      <button
+        class="btn"
+        style="
+          background-color: black;
+          border: 1px solid #cfd9de;
+          padding: 8px 16px;
+        "
+      >
+        Following
+      </button>
+      <!-- Visual only button -->
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Name & Bio -->
+  <div style="margin-bottom: 20px">
+    <div style="font-weight: 800; font-size: 20px">{{ profile.bio }}</div>
+    <div style="color: #536471">@{{ profile.id }}</div>
+    <div style="margin-top: 10px">
+      {{ profile.bio }}
+      <!-- Assuming bio is being used as name/desc for now -->
+    </div>
+    <div style="margin-top: 10px; color: #536471; font-size: 15px">
+      <span>📅 Joined {{ profile.user.date_joined|date:"F Y" }}</span>
+      <!-- Fallback if no joined date on profile -->
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div style="display: flex; gap: 20px; font-size: 15px">
+    <div>
+      <span style="font-weight: bold; color: black">{{ following_count }}</span>
+      <span style="color: #536471">Following</span>
+    </div>
+    <div>
+      <span style="font-weight: bold; color: black">{{ followers_count }}</span>
+      <span style="color: #536471">Followers</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs (Visual) -->
+<div style="display: flex; border-bottom: 1px solid #eff3f4">
+  <div
+    style="
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      font-weight: bold;
+      border-bottom: 4px solid #1da1f2;
+      color: black;
+    "
+  >
+    Posts
+  </div>
+  <div style="flex: 1; text-align: center; padding: 15px; color: #536471">
+    Replies
+  </div>
+  <div style="flex: 1; text-align: center; padding: 15px; color: #536471">
+    Media
+  </div>
+  <div style="flex: 1; text-align: center; padding: 15px; color: #536471">
+    Likes
+  </div>
+</div>
+
+<!-- Grid / Feed for Profile -->
+<!-- Reusing Feed style for simplicity, but could be Grid -->
+{% for post in posts %}
+<div
+  style="
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+    display: flex;
+    gap: 10px;
+  "
+>
+  <div
+    style="
+      width: 40px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 50%;
+      overflow: hidden;
+    "
+  >
+    {% if post.author.avatar %}
+    <img
+      src="{{ post.author.avatar.url }}"
+      style="width: 100%; height: 100%; object-fit: cover"
+    />
+    {% endif %}
+  </div>
+  <div style="flex-grow: 1">
+    <div style="margin-bottom: 5px">
+      <span style="font-weight: bold">{{ post.author.bio }}</span>
+      <span style="color: #536471"
+        >@{{ post.author.id }} · {{ post.created_at|date:"M d" }}</span
+      >
+    </div>
+    <div style="margin-bottom: 10px">{{ post.content }}</div>
+    {% if post.image %}
+    <div
+      style="
+        margin-bottom: 10px;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #eff3f4;
+      "
+    >
+      <img src="{{ post.image.url }}" style="width: 100%; display: block" />
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% empty %}
+<div style="padding: 20px; text-align: center">No posts yet</div>
+{% endfor %} {% endblock %}
