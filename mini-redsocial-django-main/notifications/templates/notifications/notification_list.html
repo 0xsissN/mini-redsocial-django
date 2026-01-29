@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notificaciones / Mondongo{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; width: 100%;">
+    <div class="header">
+        Notificaciones
+    </div>
+
+    <div class="notification-list">
+        {% for notification in notifications %}
+        <div class="notification-item" style="padding: 15px; border-bottom: 1px solid #eff3f4; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f7f9fa'" onmouseout="this.style.backgroundColor='white'">
+            
+            <div style="font-size: 24px;">
+                {% if notification.notification_type == 'like' %}
+                    <span style="color: #e0245e;">❤️</span>
+                {% elif notification.notification_type == 'comment' %}
+                    <span style="color: #1da1f2;">💬</span>
+                {% elif notification.notification_type == 'follow' %}
+                    <span style="color: #1da1f2;">👤</span>
+                {% elif notification.notification_type == 'post' %}
+                    <span style="color: #794bc4;">📝</span>
+                {% endif %}
+            </div>
+
+            <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px;">
+                    <div class="avatar-small" style="width: 30px; height: 30px;">
+                        {% if notification.sender.avatar %}
+                            <img src="{{ notification.sender.avatar.url }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                        {% endif %}
+                    </div>
+                    <strong>{{ notification.sender.user.username }}</strong>
+                </div>
+
+                <div style="color: #536471; margin-bottom: 5px;">
+                    {% if notification.notification_type == 'like' %}
+                        le gustó tu publicación
+                    {% elif notification.notification_type == 'comment' %}
+                        comentó tu publicación
+                    {% elif notification.notification_type == 'follow' %}
+                        te empezó a seguir
+                    {% elif notification.notification_type == 'post' %}
+                        publicó una nueva entrada
+                    {% endif %}
+                </div>
+
+                {% if notification.post %}
+                    <div style="color: #536471; font-size: 0.9em;">
+                        "{{ notification.post.content|truncatechars:50 }}"
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div style="padding: 20px; text-align: center; color: #536471;">
+            No tienes notificaciones
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

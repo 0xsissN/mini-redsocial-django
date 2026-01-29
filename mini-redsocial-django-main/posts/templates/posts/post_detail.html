@@ -1,0 +1,235 @@
+{% extends 'base.html' %} {% block content %}
+<div class="header">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <a href="{% url 'feed' %}" style="text-decoration: none; color: black">←</a>
+    <div style="font-weight: bold">Post</div>
+  </div>
+</div>
+
+<div style="padding: 15px; border-bottom: 1px solid #eff3f4">
+  <div style="display: flex; gap: 10px; margin-bottom: 10px">
+    <div
+      style="
+        width: 50px;
+        min-width: 50px;
+        height: 50px;
+        background-color: #ccc;
+        border-radius: 50%;
+        overflow: hidden;
+      "
+    >
+      {% if post.author.avatar %}
+      <img
+        src="{{ post.author.avatar.url }}"
+        style="width: 100%; height: 100%; object-fit: cover"
+      />
+      {% endif %}
+    </div>
+    <div style="flex-grow: 1">
+      <div style="margin-bottom: 5px">
+        <span style="font-weight: bold">{{ post.author.user.username }}</span>
+        <span style="color: #536471">@{{ post.author.user.username }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 15px; font-size: 20px; line-height: 28px">
+    {{ post.content }}
+  </div>
+
+  {% if post.image %}
+  <div
+    style="
+      margin-bottom: 15px;
+      border-radius: 15px;
+      overflow: hidden;
+      border: 1px solid #eff3f4;
+    "
+  >
+    <img
+      src="{{ post.image.url }}"
+      style="width: 100%; height: auto; display: block"
+    />
+  </div>
+  {% endif %}
+
+  <div
+    style="
+      color: #536471;
+      font-size: 15px;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eff3f4;
+    "
+  >
+    {{ post.created_at|date:"g:i A · d M Y" }}
+  </div>
+
+  <div
+    style="
+      display: flex;
+      gap: 30px;
+      padding: 15px 0;
+      border-bottom: 1px solid #eff3f4;
+      font-size: 15px;
+    "
+  >
+    <div>
+      <span style="font-weight: bold; color: black"
+        >{{ post.comments.count }}</span
+      >
+      <span style="color: #536471">Comentarios</span>
+    </div>
+    <div>
+      <span style="font-weight: bold; color: black"
+        >{{ post.likes_count }}</span
+      >
+      <span style="color: #536471">Me gusta</span>
+    </div>
+  </div>
+</div>
+
+{% if user.is_authenticated %}
+<div style="padding: 15px; border-bottom: 1px solid #eff3f4">
+  <form method="post" action="{% url 'comment_create' post.pk %}">
+    {% csrf_token %}
+    <div style="display: flex; gap: 10px">
+      <div
+        style="
+          width: 40px;
+          height: 40px;
+          background-color: #ccc;
+          border-radius: 50%;
+          overflow: hidden;
+          flex-shrink: 0;
+        "
+      >
+        {% if user.profile.avatar %}
+        <img
+          src="{{ user.profile.avatar.url }}"
+          style="
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+          "
+        />
+        {% endif %}
+      </div>
+      <div style="flex-grow: 1">
+        {{ comment_form.content }}
+        <div style="text-align: right; margin-top: 10px">
+          <button type="submit" class="btn" style="padding: 8px 20px">
+            Comentar
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endif %}
+
+{% for comment in comments %}
+<div
+  style="
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+    display: flex;
+    gap: 10px;
+  "
+>
+  <div
+    style="
+      width: 40px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    "
+  >
+    {% if comment.author.avatar %}
+    <img
+      src="{{ comment.author.avatar.url }}"
+      style="width: 100%; height: 100%; object-fit: cover"
+    />
+    {% endif %}
+  </div>
+  <div style="flex-grow: 1">
+    <div style="margin-bottom: 5px">
+      <span style="font-weight: bold">{{ comment.author.user.username }}</span>
+      <span style="color: #536471"
+        >@{{ comment.author.user.username }} · {{ comment.created_at|date:"d M" }}</span
+      >
+    </div>
+    <div style="font-size: 15px; line-height: 20px">{{ comment.content }}</div>
+  </div>
+</div>
+{% empty %}
+<div style="padding: 40px; text-align: center; color: #536471">
+  No hay comentarios todavía. ¡Sé el primero en comentar!
+</div>
+{% endfor %}
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const likeButton = document.querySelector(".like-button");
+
+    if (likeButton) {
+      likeButton.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const postId = this.dataset.postId;
+        const likeIcon = this.querySelector(".like-icon");
+        const isLiked = this.dataset.liked === "true";
+
+        fetch(`/posts/post/${postId}/like/`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Content-Type": "application/json",
+          },
+          credentials: "same-origin",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.liked) {
+              likeIcon.textContent = "❤️";
+              this.classList.add("liked");
+              this.dataset.liked = "true";
+            } else {
+              likeIcon.textContent = "🤍";
+              this.classList.remove("liked");
+              this.dataset.liked = "false";
+            }
+
+            const statsSection = document.querySelector(
+              'div[style*="Comentarios"]',
+            ).parentElement;
+            const likeCountSpan = statsSection.querySelectorAll("span")[2];
+            likeCountSpan.textContent = data.likes_count;
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,292 @@
+{% extends 'base.html' %} {% load static %} Registrarse{%
+endblock %} {% block extra_css %}
+<style>
+  body {
+    background: #001219 !important;
+    background-image: radial-gradient(
+      circle at center,
+      #002129 0%,
+      #001219 100%
+    ) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family:
+      "Inter",
+      -apple-system,
+      sans-serif;
+  }
+
+  .container {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: none !important;
+    margin-top: 0 !important;
+  }
+
+  .sidebar {
+    display: none !important;
+  }
+
+  .main-content {
+    border: none !important;
+    background: transparent !important;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .login-card {
+    display: flex;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    width: 1000px;
+    width: 90vw;
+    height: 90vh;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    animation: slideUp 0.6s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .side-panel {
+    flex: 1.2;
+    position: relative;
+    background: #000;
+    color: white;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .side-panel img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    z-index: 0;
+  }
+
+  .side-panel::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
+    z-index: 1;
+  }
+
+  .side-panel-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .side-panel h2 {
+    font-size: 48px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .side-panel p {
+    font-size: 18px;
+    opacity: 0.9;
+    line-height: 1.6;
+    max-width: 400px;
+  }
+
+  .form-panel {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: white;
+    color: #1a1a1a;
+    overflow-y: auto; 
+  }
+
+  .form-panel h1 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #111;
+    text-align: left;
+  }
+
+  .form-panel .subtitle {
+    color: #666;
+    margin-bottom: 40px;
+    font-size: 16px;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+  }
+
+  .form input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    background: #fdfdfd;
+  }
+
+  .form input:focus {
+    outline: none;
+    border-color: #000;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .form .helptext {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .btn {
+    margin-top: 15px;
+    background: #000 !important;
+    color: #fff !important;
+    padding: 16px !important;
+    border-radius: 12px !important;
+    border: none !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn:hover {
+    background: #222 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .msg--error {
+    background: #fff5f5;
+    color: #c53030;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    border: 1px solid #feb2b2;
+    text-align: center;
+  }
+
+  .login-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .login-link a {
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  @media (max-width: 900px) {
+    .login-card {
+      flex-direction: column;
+      width: 450px;
+      height: auto;
+    }
+
+    .side-panel {
+      padding: 40px;
+      min-height: 250px;
+      justify-content: center;
+    }
+
+    .side-panel h2 {
+      font-size: 32px;
+    }
+
+    .form-panel {
+      padding: 40px;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="login-card">
+  <div class="side-panel">
+    <img src="{% static 'images/login_bg.png' %}" alt="Abstract Background" />
+    <div class="side-panel-content">
+      <h2>Únete a la comunidad.</h2>
+      <p>Crea tu cuenta y empieza a compartir tus momentos con el mundo.</p>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <h1>Registrarse</h1>
+    <p class="subtitle">Ingresa tus datos para crear una nueva cuenta.</p>
+
+    <form method="post" class="form">
+      {% csrf_token %} {% if form.non_field_errors %}
+      <div class="msg msg--error">{{ form.non_field_errors }}</div>
+      {% endif %} {% for field in form %}
+      <label>
+        {{ field.label }} {{ field }} {% if field.help_text %}
+        <span class="helptext">{{ field.help_text }}</span>
+        {% endif %} {% for error in field.errors %}
+        <div style="color: red; font-size: 12px">{{ error }}</div>
+        {% endfor %}
+      </label>
+      {% endfor %}
+
+      <button class="btn" type="submit">Crear cuenta</button>
+
+      <div class="login-link">
+        ¿Ya tienes una cuenta? <a href="{% url 'login' %}">Ingresar</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

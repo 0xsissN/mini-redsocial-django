@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmar Eliminación{% endblock %}
+
+{% block content %}
+<div class="header">Eliminar Publicación</div>
+
+<div style="padding: 20px; text-align: center;">
+    <h2 style="font-size: 20px; margin-bottom: 20px;">¿Estás seguro de que deseas eliminar esta publicación?</h2>
+    <p style="color: #536471; margin-bottom: 25px;">Esta acción quitará la publicación del Inicio, pero seguirá visible
+        en tu perfil bajo la sección de "Eliminados".</p>
+
+    <form method="post" style="display: flex; justify-content: center; gap: 15px;">
+        {% csrf_token %}
+        <button type="submit" class="btn" style="background-color: #f4212e;">Eliminar</button>
+        <a href="{% url 'feed' %}"
+            style="text-decoration: none; color: #536471; padding: 10px; font-weight: bold;">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

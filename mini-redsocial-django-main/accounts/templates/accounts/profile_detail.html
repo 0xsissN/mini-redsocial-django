@@ -1,0 +1,309 @@
+{% extends 'base.html' %} {% block content %}
+<div class="header">
+  <div style="display: flex; align-items: center; gap: 10px">
+    <a
+      href="javascript:history.back()"
+      style="text-decoration: none; color: black"
+      >←</a
+    >
+    <div>
+      <div style="font-weight: bold">{{ profile.user.username }}</div>
+      <div style="font-size: 13px; color: #536471">
+        {{ posts_count }} publicaciones
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="padding: 20px; border-bottom: 1px solid #eff3f4">
+  <div
+    style="
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    "
+  >
+    <div
+      style="
+        width: 100px;
+        height: 100px;
+        background-color: #ccc;
+        border-radius: 50%;
+        overflow: hidden;
+      "
+    >
+      {% if profile.avatar %}
+      <img
+        src="{{ profile.avatar.url }}"
+        style="width: 100%; height: 100%; object-fit: cover"
+      />
+      {% endif %}
+    </div>
+
+    <div>
+      {% if user.is_authenticated %} {% if user.profile == profile %}
+      <a
+        href="{% url 'profile-edit' %}"
+        class="btn"
+        style="
+          background-color: white;
+          color: black;
+          border: 1px solid #cfd9de;
+          padding: 8px 16px;
+          text-decoration: none;
+        "
+      >
+        Editar Perfil
+      </a>
+{% else %}
+      {% if is_following %}
+      <button
+        class="follow-btn"
+        data-profile-id="{{ profile.pk }}"
+        data-is-following="true"
+        style="
+          background-color: white;
+          color: black;
+          border: 1px solid #cfd9de;
+          padding: 8px 16px;
+          cursor: pointer;
+        "
+      >
+        Siguiendo
+      </button>
+      {% else %}
+      <button
+        class="follow-btn"
+        data-profile-id="{{ profile.pk }}"
+        data-is-following="false"
+        style="
+          background-color: black;
+          color: white;
+          border: 1px solid #cfd9de;
+          padding: 8px 16px;
+          cursor: pointer;
+        "
+      >
+        Seguir
+      </button>
+      {% endif %}
+      {% endif %} {% endif %}
+    </div>
+  </div>
+
+  <div style="margin-bottom: 20px">
+    <div style="font-weight: 800; font-size: 20px">
+      {{ profile.user.username }}
+    </div>
+    <div style="color: #536471">@{{ profile.user.username }}</div>
+    <div style="margin-top: 10px">{{ profile.bio }}</div>
+    <div style="margin-top: 10px; color: #536471; font-size: 15px">
+      <span>📅 Se unió en {{ profile.user.date_joined|date:"d M Y" }}</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 20px; font-size: 15px">
+    <div>
+      <span style="font-weight: bold; color: black">{{ following_count }}</span>
+      <span style="color: #536471">Seguidores</span>
+    </div>
+    <div>
+      <span style="font-weight: bold; color: black">{{ followers_count }}</span>
+      <span style="color: #536471">Siguiendo</span>
+    </div>
+  </div>
+</div>
+
+<div
+  style="
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+    background-color: #f7f9fa;
+    font-weight: bold;
+    text-align: center;
+  "
+>
+  Publicaciones
+</div>
+
+{% for post in posts %}
+<div
+  style="
+    padding: 15px;
+    border-bottom: 1px solid #eff3f4;
+    display: flex;
+    gap: 10px;
+  "
+>
+  <div
+    style="
+      width: 40px;
+      height: 40px;
+      background-color: #ccc;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    "
+  >
+    {% if post.author.avatar %}
+    <img
+      src="{{ post.author.avatar.url }}"
+      style="width: 100%; height: 100%; object-fit: cover"
+    />
+    {% endif %}
+  </div>
+  <div style="flex-grow: 1">
+    <div
+      style="margin-bottom: 5px; display: flex; align-items: center; gap: 10px"
+    >
+      <span style="font-weight: bold">{{ post.author.user.username }}</span>
+      <span style="color: #536471"
+        >@{{ post.author.user.username }} · {{ post.created_at|date:"d M" }}</span
+      >
+    </div>
+    <div style="margin-bottom: 10px; font-size: 15px; line-height: 20px">
+      {{ post.content }}
+    </div>
+    {% if post.image %}
+    <div
+      style="
+        margin-bottom: 10px;
+        border-radius: 15px;
+        overflow: hidden;
+        border: 1px solid #eff3f4;
+      "
+    >
+      <img
+        src="{{ post.image.url }}"
+        style="width: 100%; height: auto; display: block"
+      />
+    </div>
+    {% endif %}
+
+    <div
+      style="
+        display: flex;
+        gap: 20px;
+        color: #536471;
+        align-items: center;
+        font-size: 14px;
+      "
+    >
+      <a
+        href="{% url 'post_detail' post.pk %}"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          text-decoration: none;
+          color: inherit;
+        "
+      >
+        <span>💬</span>
+        <span>{{ post.comments.count }}</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 5px">
+        <span>❤️</span>
+        <span>{{ post.likes_count }}</span>
+      </div>
+
+      {% if user.is_authenticated and user.profile == post.author %}
+      <div style="display: flex; gap: 15px; margin-left: auto">
+        <a
+          href="{% url 'post_update' post.pk %}"
+          style="text-decoration: none; font-size: 14px; color: #1da1f2"
+          >Editar</a
+        >
+        <a
+          href="{% url 'post_delete' post.pk %}"
+          style="text-decoration: none; font-size: 14px; color: #f4212e"
+          >Eliminar</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% empty %}
+<div style="padding: 40px; text-align: center; color: #536471">
+  No hay publicaciones todavía.
+</div>
+{% endfor %}
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const followBtns = document.querySelectorAll(".follow-btn");
+
+    followBtns.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        
+        const profileId = this.dataset.profileId;
+        const isFollowing = this.dataset.isFollowing === "true";
+        const followersCountEl = document.querySelector('span[style*="font-weight: bold"]');
+        
+        const url = isFollowing 
+          ? `/follows/unfollow/${profileId}/` 
+          : `/follows/follow/${profileId}/`;
+
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          credentials: "same-origin",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Update button
+              if (data.is_following) {
+                this.textContent = "Siguiendo";
+                this.style.backgroundColor = "white";
+                this.style.color = "black";
+                this.dataset.isFollowing = "true";
+              } else {
+                this.textContent = "Seguir";
+                this.style.backgroundColor = "black";
+                this.style.color = "white";
+                this.dataset.isFollowing = "false";
+              }
+              
+// Update followers count
+              const statsDiv = document.querySelector('div[style*="display: flex; gap: 20px; font-size: 15px"]');
+              if (statsDiv) {
+                const followersDiv = statsDiv.children[1];
+                const followersCountSpan = followersDiv.querySelector('span[style*="font-weight: bold"]');
+                if (followersCountSpan) {
+                  followersCountSpan.textContent = data.followers_count;
+                }
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    });
+  });
+</script>
+
+{% endblock %}

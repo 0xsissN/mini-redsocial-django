@@ -1,0 +1,49 @@
+{% extends 'base.html' %} {% block title %}Editar Perfil{% endblock %}
+{% block content %}
+<div class="header">Editar Perfil</div>
+
+<div style="padding: 20px">
+  {% if messages %}
+  <div style="margin-bottom: 20px">
+    {% for message in messages %}
+    <div style="
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      ">
+      {{ message }}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div style="display: flex; flex-direction: column; gap: 20px">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <label style="font-weight: bold">Foto de Perfil</label>
+        {{ form.avatar }}
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <label style="font-weight: bold">Biografía</label>
+        {{ form.bio }}
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <label style="font-weight: bold">Fecha de Nacimiento</label>
+        {{ form.birth_date }}
+      </div>
+
+      <button type="submit" class="btn" style="margin-top: 10px">
+        Guardar Cambios
+      </button>
+      <a href="{% url 'profile_detail' user.profile.pk %}"
+        style="text-align: center; text-decoration: none; color: #536471; margin-top: 10px; font-weight: bold;">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
