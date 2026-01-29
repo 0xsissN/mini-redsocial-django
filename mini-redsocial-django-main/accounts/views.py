@@ -1,13 +1,14 @@
 from django.views.generic import DetailView
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from .models import Profile
 from .forms import ProfileUpdateForm
 from posts.models import Post
 from follows.models import Follow
 
-class ProfileDetailView(DetailView):
+class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'accounts/profile_detail.html'
     context_object_name = 'profile'
@@ -22,14 +23,10 @@ class ProfileDetailView(DetailView):
         context['followers_count'] = profile.followers.count()
         context['following_count'] = profile.following.count()
         
-        # Check if current user is following this profile
-        if self.request.user.is_authenticated:
-            context['is_following'] = Follow.objects.filter(
-                follower=self.request.user.profile,
-                following=profile
-            ).exists()
-        else:
-            context['is_following'] = False
+        context['is_following'] = Follow.objects.filter(
+            follower=self.request.user.profile,
+            following=profile
+        ).exists()
         
         return context
 

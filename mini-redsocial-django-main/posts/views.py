@@ -8,7 +8,7 @@ from django.views.decorators.http import require_POST
 from .models import Post, Reaction, Comment
 from .forms import PostForm, CommentForm
 
-class FeedView(ListView):
+class FeedView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'posts/feed.html'
     context_object_name = 'posts'
@@ -17,12 +17,8 @@ class FeedView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        if self.request.user.is_authenticated:
-            for post in context['posts']:
-                post.user_liked = post.user_has_liked(self.request.user.profile)
-        else:
-            for post in context['posts']:
-                post.user_liked = False
+        for post in context['posts']:
+            post.user_liked = post.user_has_liked(self.request.user.profile)
         
         return context
 
@@ -55,7 +51,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         post = self.get_object()
         return self.request.user.profile == post.author
 
-class PostDetailView(DetailView):
+class PostDetailView(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'posts/post_detail.html'
     context_object_name = 'post'
@@ -64,15 +60,11 @@ class PostDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         post = self.get_object()
         
-        if self.request.user.is_authenticated:
-            post.user_liked = post.user_has_liked(self.request.user.profile)
-        else:
-            post.user_liked = False
+        post.user_liked = post.user_has_liked(self.request.user.profile)
         
         context['comments'] = post.comments.all().order_by('created_at')
         
-        if self.request.user.is_authenticated:
-            context['comment_form'] = CommentForm()
+        context['comment_form'] = CommentForm()
         
         return context
 

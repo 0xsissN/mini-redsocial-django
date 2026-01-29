@@ -19,7 +19,8 @@ INSTALLED_APPS = [
     'follows',
     'posts',
     'notifications',
-    'login'
+    'login',
+    'mondongo'
 ]
 
 MIDDLEWARE = [
@@ -90,5 +91,5 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'feed'
+LOGIN_REDIRECT_URL = 'login_redirect'
 LOGOUT_REDIRECT_URL = 'login'

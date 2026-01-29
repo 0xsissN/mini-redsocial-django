@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm
 
 def register(request):
@@ -13,3 +14,9 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'login/register.html', {'form': form})
+
+@login_required
+def login_redirect(request):
+    if request.user.is_superuser or request.user.is_staff:
+        return redirect('mondongo_user_list')
+    return redirect('feed')

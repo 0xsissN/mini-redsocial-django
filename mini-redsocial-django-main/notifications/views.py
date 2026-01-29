@@ -9,5 +9,4 @@ class NotificationListView(LoginRequiredMixin, ListView):
     context_object_name = 'notifications'
     
     def get_queryset(self):
-        # Return notifications for the current user, ordered by newest first
         return Notification.objects.filter(user=self.request.user.profile).order_by('-created_at')

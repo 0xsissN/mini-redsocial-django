@@ -19,7 +19,6 @@ def create_post_notification(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Reaction)
 def create_like_notification(sender, instance, created, **kwargs):
     if created and instance.type == 'like':
-        # Don't notify if the user likes their own post
         if instance.user != instance.post.author:
             Notification.objects.create(
                 user=instance.post.author,
@@ -31,7 +30,6 @@ def create_like_notification(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Comment)
 def create_comment_notification(sender, instance, created, **kwargs):
     if created:
-        # Don't notify if the user comments on their own post
         if instance.author != instance.post.author:
             Notification.objects.create(
                 user=instance.post.author,

@@ -6,10 +6,11 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('login.urls')),
-    path('posts/', include('posts.urls')),
-    path('accounts/', include('accounts.urls')),
-    path('follows/', include('follows.urls')),
-    path('notifications/', include('notifications.urls')),
+    path('posteos/', include('posts.urls')),
+    path('cuentas/', include('accounts.urls')),
+    path('seguir/', include('follows.urls')),
+    path('notificaciones/', include('notifications.urls')),
+    path('mondongo/', include('mondongo.urls')),
 ]
 
 if settings.DEBUG:
