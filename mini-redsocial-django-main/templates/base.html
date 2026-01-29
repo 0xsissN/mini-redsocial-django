@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Mondongo{% endblock %}</title>
+    <link rel="icon" href="../static/images/logo.png" />
     <style>
       body {
         font-family:
@@ -86,17 +87,19 @@
       }
 
       .btn {
-        background-color: #1da1f2;
-        color: white;
-        border: none;
+        background-color: #000;
+        color: #fff;
+        border: 2px solid #000;
         padding: 10px 20px;
         border-radius: 20px;
         font-weight: bold;
         cursor: pointer;
+        transition: all 0.2s ease;
       }
 
       .btn:hover {
-        background-color: #1a91da;
+        background-color: #484646;
+        color: #fff;
       }
 
       .like-button {
@@ -119,7 +122,9 @@
         <a href="{% url 'profile_detail' user.profile.pk %}" class="nav-link"
           >Perfil</a
         >
-        <a href="{% url 'notification_list' %}" class="nav-link">Notificaciones</a>
+        <a href="{% url 'notification_list' %}" class="nav-link"
+          >Notificaciones</a
+        >
         <form action="{% url 'logout' %}" method="post" style="display: inline">
           {% csrf_token %}
           <button

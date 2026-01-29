@@ -6,7 +6,7 @@
     <title>{% block title %}Mondongo Admin{% endblock %}</title>
     <style>
       :root {
-        --primary-color: #1da1f2;
+        --primary-color: #000;
         --secondary-color: #19cf86;
         --danger-color: #e0245e;
         --background-color: #f7f9fa;
@@ -58,7 +58,7 @@
       }
 
       .nav-link:hover {
-        background-color: #e8f5fe;
+        background-color: #a7a7a7;
         color: var(--primary-color);
       }
 
@@ -125,7 +125,7 @@
       }
 
       .page-link:hover {
-        background-color: #eff3f4;
+        background-color: #a7a7a7;
       }
 
       .page-link.active {
@@ -190,8 +190,8 @@
       <div class="header">
         <h1>{% block header %}{% endblock %}</h1>
       </div>
-      
-       {% block content %}{% endblock %}
+
+      {% block content %}{% endblock %}
     </div>
   </body>
 </html>

@@ -10,6 +10,6 @@ urlpatterns = [
     path('detalle/<int:pk>/', PostDetailView.as_view(), name='post_detail'),
     path('editar/<int:pk>/', PostUpdateView.as_view(), name='post_update'),
     path('eliminar/<int:pk>/', PostDeleteView.as_view(), name='post_delete'),
-    path('megusta/<int:pk>/', toggle_like, name='toggle_like'),
+    path('post/<int:pk>/like/', toggle_like, name='toggle_like'),
     path('comentar/<int:pk>/', CommentCreateView.as_view(), name='comment_create'),
 ]

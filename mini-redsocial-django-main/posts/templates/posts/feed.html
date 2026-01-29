@@ -154,7 +154,7 @@
         const likeCount = this.querySelector(".like-count");
         const isLiked = this.dataset.liked === "true";
 
-        fetch(`/posts/post/${postId}/like/`, {
+        fetch(`/posteos/post/${postId}/like/`, {
           method: "POST",
           headers: {
             "X-CSRFToken": getCookie("csrftoken"),

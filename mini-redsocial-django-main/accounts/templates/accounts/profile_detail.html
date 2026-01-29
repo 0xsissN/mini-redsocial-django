@@ -260,8 +260,8 @@
         const followersCountEl = document.querySelector('span[style*="font-weight: bold"]');
         
         const url = isFollowing 
-          ? `/follows/unfollow/${profileId}/` 
-          : `/follows/follow/${profileId}/`;
+          ? `/seguir/dejar/${profileId}/` 
+          : `/seguir/${profileId}/`;
 
         fetch(url, {
           method: "POST",
@@ -275,7 +275,6 @@
           .then((response) => response.json())
           .then((data) => {
             if (data.success) {
-              // Update button
               if (data.is_following) {
                 this.textContent = "Siguiendo";
                 this.style.backgroundColor = "white";
@@ -288,7 +287,6 @@
                 this.dataset.isFollowing = "false";
               }
               
-// Update followers count
               const statsDiv = document.querySelector('div[style*="display: flex; gap: 20px; font-size: 15px"]');
               if (statsDiv) {
                 const followersDiv = statsDiv.children[1];
